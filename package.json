@@ -1,0 +1,41 @@
+{
+  "name": "@meanie/joi-moment",
+  "description": "A Joi extension to automatically convert ISO date strings to moment objects and validate using moment functions",
+  "version": "1.0.0",
+  "homepage": "https://github.com/meanie/joi-moment#readme",
+  "author": {
+    "name": "Adam Reis",
+    "email": "adam@reis.nz",
+    "url": "https://adam.reis.nz/"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meanie/joi-moment.git"
+  },
+  "bugs": {
+    "url": "https://github.com/meanie/joi-moment/issues"
+  },
+  "keywords": [
+    "meanie",
+    "joi",
+    "extension",
+    "moment"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "main": "index.js",
+  "peerDependencies": {
+    "@hapi/joi": "^15.0.0",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.23"
+  },
+  "scripts": {
+    "postversion": "git push && git push --tags && npm publish"
+  }
+}
