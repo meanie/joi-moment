@@ -41,3 +41,17 @@ const schema = Joi.object({
   endDate: Joi.moment().tz(timezone).endOf('day').isAfter(Joi.ref('startDate')),
 });
 ```
+
+## Issues & feature requests
+
+Please report any bugs, issues, suggestions and feature requests in the [meanie-moment-joi issue tracker](https://github.com/meanie/moment-joi/issues).
+
+## Contributing
+
+Pull requests are welcome! If you would like to contribute to Meanie, please check out the [Meanie contributing guidelines](https://github.com/meanie/meanie/blob/master/CONTRIBUTING.md).
+
+## License
+
+(MIT License)
+
+Copyright 2019, [Adam Reis](http://adam.reis.nz)
