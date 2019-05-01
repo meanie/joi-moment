@@ -37,7 +37,7 @@ module.exports = Joi.extend(JoiMoment);
 
 ```js
 const schema = Joi.object({
-	startDate: Joi.moment().tz(timezone).startOf('day'),
-	endDate: Joi.moment().tz(timezone).endOf('day').isAfter(Joi.ref('startDate')),
+  startDate: Joi.moment().tz(timezone).startOf('day'),
+  endDate: Joi.moment().tz(timezone).endOf('day').isAfter(Joi.ref('startDate')),
 });
 ```
