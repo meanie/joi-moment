@@ -31,9 +31,9 @@
   },
   "main": "index.js",
   "peerDependencies": {
-    "@hapi/joi": "^15.0.0",
-    "moment": "^2.24.0",
-    "moment-timezone": "^0.5.23"
+    "@hapi/joi": ">=15.0.0",
+    "moment": ">=2.24.0",
+    "moment-timezone": ">=0.5.23"
   },
   "scripts": {
     "postversion": "git push && git push --tags && npm publish"

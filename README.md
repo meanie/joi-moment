@@ -44,7 +44,7 @@ const schema = Joi.object({
 
 ## Issues & feature requests
 
-Please report any bugs, issues, suggestions and feature requests in the [meanie-moment-joi issue tracker](https://github.com/meanie/moment-joi/issues).
+Please report any bugs, issues, suggestions and feature requests in the [meanie-joi-moment issue tracker](https://github.com/meanie/joi-moment/issues).
 
 ## Contributing
 
