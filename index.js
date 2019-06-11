@@ -41,6 +41,9 @@ module.exports = Joi => ({
         tz: Joi.string(),
       },
       validate(params, value, state, options) {
+        if (!value) {
+          return value;
+        }
         return value.tz(params.tz);
       },
     },
@@ -50,6 +53,9 @@ module.exports = Joi => ({
         startOf: Joi.string(),
       },
       validate(params, value, state, options) {
+        if (!value) {
+          return value;
+        }
         return value.startOf(params.startOf);
       },
     },
@@ -59,6 +65,9 @@ module.exports = Joi => ({
         endOf: Joi.string(),
       },
       validate(params, value, state, options) {
+        if (!value) {
+          return value;
+        }
         return value.endOf(params.endOf);
       },
     },
