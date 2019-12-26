@@ -79,6 +79,9 @@ module.exports = Joi => ({
       },
       validate(params, value, state, options) {
         let {date, precision} = params;
+        if (!moment.isMoment(value)) {
+          return value;
+        }
         if (Joi.isRef(date)) {
           date = date(state.reference || state.parent, options);
           if (!(date instanceof Date) && !moment.isMoment(date)) {
@@ -107,6 +110,9 @@ module.exports = Joi => ({
       },
       validate(params, value, state, options) {
         let {date, precision} = params;
+        if (!moment.isMoment(value)) {
+          return value;
+        }
         if (Joi.isRef(date)) {
           date = date(state.reference || state.parent, options);
           if (!(date instanceof Date) && !moment.isMoment(date)) {
