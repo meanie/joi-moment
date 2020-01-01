@@ -85,7 +85,7 @@ module.exports = Joi => ({
         if (Joi.isRef(date)) {
           date = date(state.reference || state.parent, options);
           if (!(date instanceof Date) && !moment.isMoment(date)) {
-            return this.createError('any.invalid', {date}, state, options);
+            return value;
           }
         }
         if (value.isBefore(date, precision)) {
@@ -116,7 +116,7 @@ module.exports = Joi => ({
         if (Joi.isRef(date)) {
           date = date(state.reference || state.parent, options);
           if (!(date instanceof Date) && !moment.isMoment(date)) {
-            return this.createError('any.invalid', {date}, state, options);
+            return value;
           }
         }
         if (value.isAfter(date, precision)) {
