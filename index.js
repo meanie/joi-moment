@@ -74,11 +74,18 @@ module.exports = Joi => ({
     {
       name: 'isBefore',
       params: {
-        date: Joi.string(),
+        // TODO: This would exclude a moment object, which is valid input
+        //       So for now, just allow anything as input
+        // date: Joi.alternatives([
+        //   Joi.func().ref(),
+        //   Joi.date().iso(),
+        // ]),
+        date: Joi.any(),
         precision: Joi.string(),
+        silent: Joi.boolean().default(false),
       },
       validate(params, value, state, options) {
-        let {date, precision} = params;
+        let {date, precision, silent} = params;
         if (!moment.isMoment(value)) {
           return value;
         }
@@ -91,6 +98,12 @@ module.exports = Joi => ({
         if (value.isBefore(date, precision)) {
           return value;
         }
+        if (silent) {
+          if (moment.isMoment(date)) {
+            return date;
+          }
+          return moment(date);
+        }
         if (!precision) {
           precision = 'milliseconds';
         }
@@ -102,14 +115,18 @@ module.exports = Joi => ({
     {
       name: 'isAfter',
       params: {
-        date: Joi.alternatives([
-          Joi.func().ref(),
-          Joi.date().iso(),
-        ]),
+        // TODO: This would exclude a moment object, which is valid input
+        //       So for now, just allow anything as input
+        // date: Joi.alternatives([
+        //   Joi.func().ref(),
+        //   Joi.date().iso(),
+        // ]),
+        date: Joi.any(),
         precision: Joi.string(),
+        silent: Joi.boolean().default(false),
       },
       validate(params, value, state, options) {
-        let {date, precision} = params;
+        let {date, precision, silent} = params;
         if (!moment.isMoment(value)) {
           return value;
         }
@@ -121,6 +138,12 @@ module.exports = Joi => ({
         }
         if (value.isAfter(date, precision)) {
           return value;
+        }
+        if (silent) {
+          if (moment.isMoment(date)) {
+            return date;
+          }
+          return moment(date);
         }
         if (!precision) {
           precision = 'milliseconds';
