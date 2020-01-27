@@ -50,8 +50,12 @@ Please report any bugs, issues, suggestions and feature requests in the [meanie-
 
 Pull requests are welcome! If you would like to contribute to Meanie, please check out the [Meanie contributing guidelines](https://github.com/meanie/meanie/blob/master/CONTRIBUTING.md).
 
+## Sponsor
+
+This package has been kindly sponsored by [Hello Club](https://helloclub.com?source=meanie), an [all in one club and membership management solution](https://helloclub.com?source=meanie) complete with booking system, automated membership renewals, online payments and integrated access and light control. Check us out if you happen to belong to any kind of club or if you know someone who helps run a club!
+
 ## License
 
 (MIT License)
 
-Copyright 2019, [Adam Reis](http://adam.reis.nz)
+Copyright 2019-2020, Adam Reis
