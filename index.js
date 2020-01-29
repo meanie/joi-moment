@@ -1,4 +1,3 @@
-/* eslint no-unused-vars: off */
 'use strict';
 
 /**
@@ -10,148 +9,163 @@ const moment = require('moment-timezone');
  * Extend Joi with moment date handling
  */
 module.exports = Joi => ({
+  type: 'moment',
   base: Joi.any(),
-  name: 'moment',
-  language: {
-    isBefore: `must be before {{date}}, with precision "{{precision}}"`,
-    isAfter: `must be after {{date}}, with precision "{{precision}}"`,
+  messages: {
+    'moment.isBefore': `must be before {{#date}}, with precision "{{#precision}}"`,
+    'moment.isAfter': `must be after {{#date}}, with precision "{{#precision}}"`,
   },
-  coerce(value, state, options) {
+  coerce(value, helpers) {
 
     //No value
     if (!value) {
-      return value;
+      return;
     }
 
     //Convert to moment
     value = moment(value, moment.ISO_8601);
 
-    //Not valid
+    //If invalid at this stage, return as is
     if (!value.isValid()) {
-      return this.createError('date.iso', {value}, state, options);
+      return;
     }
 
-    //Return result
-    return value;
+    //Get flags
+    const tz = helpers.schema.$_getFlag('tz');
+    const startOf = helpers.schema.$_getFlag('startOf');
+    const endOf = helpers.schema.$_getFlag('endOf');
+    const max = helpers.schema.$_getFlag('max');
+    const min = helpers.schema.$_getFlag('min');
+
+    //Apply a timezone
+    if (tz) {
+      value.tz(tz);
+    }
+
+    //Start of period
+    if (startOf) {
+      value.startOf(startOf);
+    }
+
+    //End of period
+    if (endOf) {
+      value.endOf(endOf);
+    }
+
+    //Min date
+    if (min && value.isBefore(min)) {
+      value = min;
+    }
+
+    //Max date
+    if (max && value.isAfter(max)) {
+      value = max;
+    }
+
+    //Return value
+    return {value};
   },
-  rules: [
-    {
-      name: 'tz',
-      params: {
-        tz: Joi.string(),
-      },
-      validate(params, value, state, options) {
-        if (!value) {
-          return value;
-        }
-        return value.tz(params.tz);
-      },
-    },
-    {
-      name: 'startOf',
-      params: {
-        startOf: Joi.string(),
-      },
-      validate(params, value, state, options) {
-        if (!value) {
-          return value;
-        }
-        return value.startOf(params.startOf);
+  validate(value, helpers) {
+
+    //Invalid date provided
+    if (!value.isValid()) {
+      const errors = helpers.error('date.iso');
+      return {value, errors};
+    }
+  },
+  rules: {
+    tz: {
+      method(tz) {
+        return this.$_setFlag('tz', tz);
       },
     },
-    {
-      name: 'endOf',
-      params: {
-        endOf: Joi.string(),
-      },
-      validate(params, value, state, options) {
-        if (!value) {
-          return value;
-        }
-        return value.endOf(params.endOf);
+    startOf: {
+      method(startOf) {
+        return this.$_setFlag('startOf', startOf);
       },
     },
-    {
-      name: 'isBefore',
-      params: {
-        // TODO: This would exclude a moment object, which is valid input
-        //       So for now, just allow anything as input
-        // date: Joi.alternatives([
-        //   Joi.func().ref(),
-        //   Joi.date().iso(),
-        // ]),
-        date: Joi.any(),
-        precision: Joi.string(),
-        silent: Joi.boolean().default(false),
+    endOf: {
+      method(endOf) {
+        return this.$_setFlag('endOf', endOf);
       },
-      validate(params, value, state, options) {
-        let {date, precision, silent} = params;
-        if (!moment.isMoment(value)) {
-          return value;
-        }
-        if (Joi.isRef(date)) {
-          date = date(state.reference || state.parent, options);
-          if (!(date instanceof Date) && !moment.isMoment(date)) {
-            return value;
-          }
-        }
-        if (value.isBefore(date, precision)) {
-          return value;
-        }
-        if (silent) {
-          if (moment.isMoment(date)) {
-            return date;
-          }
-          return moment(date);
-        }
+    },
+    maxDate: {
+      method(max) {
+        return this.$_setFlag('max', max);
+      },
+    },
+    minDate: {
+      method(min) {
+        return this.$_setFlag('min', min);
+      },
+    },
+    isBefore: {
+      method(date, precision) {
+        return this.$_addRule({
+          name: 'isBefore',
+          args: {date, precision},
+        });
+      },
+      args: [
+        {
+          name: 'date',
+          ref: true,
+          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          message: 'must be a date string or moment object',
+        },
+        {
+          name: 'precision',
+          assert: (value) => typeof value === 'string',
+          message: 'must be a string',
+        },
+      ],
+      validate(value, helpers, args) {
+        let {date, precision} = args;
         if (!precision) {
           precision = 'milliseconds';
         }
-        return this.createError('moment.isBefore', {
-          value, date, precision,
-        }, state, options);
+        if (typeof date === 'string') {
+          date = moment(date, moment.ISO_8601);
+        }
+        if (!moment.isMoment(value) || value.isBefore(date, precision)) {
+          return value;
+        }
+        return helpers.error('moment.isBefore', {date, precision});
       },
     },
-    {
-      name: 'isAfter',
-      params: {
-        // TODO: This would exclude a moment object, which is valid input
-        //       So for now, just allow anything as input
-        // date: Joi.alternatives([
-        //   Joi.func().ref(),
-        //   Joi.date().iso(),
-        // ]),
-        date: Joi.any(),
-        precision: Joi.string(),
-        silent: Joi.boolean().default(false),
+    isAfter: {
+      method(date, precision) {
+        return this.$_addRule({
+          name: 'isAfter',
+          args: {date, precision},
+        });
       },
-      validate(params, value, state, options) {
-        let {date, precision, silent} = params;
-        if (!moment.isMoment(value)) {
-          return value;
-        }
-        if (Joi.isRef(date)) {
-          date = date(state.reference || state.parent, options);
-          if (!(date instanceof Date) && !moment.isMoment(date)) {
-            return value;
-          }
-        }
-        if (value.isAfter(date, precision)) {
-          return value;
-        }
-        if (silent) {
-          if (moment.isMoment(date)) {
-            return date;
-          }
-          return moment(date);
-        }
+      args: [
+        {
+          name: 'date',
+          ref: true,
+          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          message: 'must be a date string or moment object',
+        },
+        {
+          name: 'precision',
+          assert: (value) => typeof value === 'string',
+          message: 'must be a string',
+        },
+      ],
+      validate(value, helpers, args, options) {
+        let {date, precision} = args;
         if (!precision) {
           precision = 'milliseconds';
         }
-        return this.createError('moment.isAfter', {
-          value, date, precision,
-        }, state, options);
+        if (typeof date === 'string') {
+          date = moment(date, moment.ISO_8601);
+        }
+        if (!moment.isMoment(value) || value.isAfter(date, precision)) {
+          return value;
+        }
+        return helpers.error('moment.isAfter', {date, precision});
       },
     },
-  ],
+  },
 });

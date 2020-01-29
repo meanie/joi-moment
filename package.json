@@ -5,8 +5,8 @@
   "homepage": "https://github.com/meanie/joi-moment#readme",
   "author": {
     "name": "Adam Reis",
-    "email": "adam@reis.nz",
-    "url": "https://adam.reis.nz/"
+    "email": "adam@helloclub.com",
+    "url": "https://helloclub.com"
   },
   "contributors": [],
   "license": "MIT",
@@ -31,9 +31,9 @@
   },
   "main": "index.js",
   "peerDependencies": {
-    "@hapi/joi": ">=15.0.0",
+    "@hapi/joi": ">=17.0.0",
     "moment": ">=2.24.0",
-    "moment-timezone": ">=0.5.23"
+    "moment-timezone": ">=0.5.27"
   },
   "scripts": {
     "postversion": "git push && git push --tags && npm publish"
