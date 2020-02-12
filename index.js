@@ -14,6 +14,8 @@ module.exports = Joi => ({
   messages: {
     'moment.isBefore': `must be before {{#date}}, with precision "{{#precision}}"`,
     'moment.isAfter': `must be after {{#date}}, with precision "{{#precision}}"`,
+    'moment.isSameOrBefore': `must be same as or before {{#date}}, with precision "{{#precision}}"`,
+    'moment.isSameOrAfter': `must be same as or after {{#date}}, with precision "{{#precision}}"`,
   },
   coerce(value, helpers) {
 
@@ -165,6 +167,74 @@ module.exports = Joi => ({
           return value;
         }
         return helpers.error('moment.isAfter', {date, precision});
+      },
+    },
+    isSameOrBefore: {
+      method(date, precision) {
+        return this.$_addRule({
+          name: 'isBefore',
+          args: {date, precision},
+        });
+      },
+      args: [
+        {
+          name: 'date',
+          ref: true,
+          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          message: 'must be a date string or moment object',
+        },
+        {
+          name: 'precision',
+          assert: (value) => typeof value === 'string',
+          message: 'must be a string',
+        },
+      ],
+      validate(value, helpers, args) {
+        let {date, precision} = args;
+        if (!precision) {
+          precision = 'milliseconds';
+        }
+        if (typeof date === 'string') {
+          date = moment(date, moment.ISO_8601);
+        }
+        if (!moment.isMoment(value) || value.isSameOrBefore(date, precision)) {
+          return value;
+        }
+        return helpers.error('moment.isSameOrBefore', {date, precision});
+      },
+    },
+    isSameOrAfter: {
+      method(date, precision) {
+        return this.$_addRule({
+          name: 'isAfter',
+          args: {date, precision},
+        });
+      },
+      args: [
+        {
+          name: 'date',
+          ref: true,
+          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          message: 'must be a date string or moment object',
+        },
+        {
+          name: 'precision',
+          assert: (value) => typeof value === 'string',
+          message: 'must be a string',
+        },
+      ],
+      validate(value, helpers, args, options) {
+        let {date, precision} = args;
+        if (!precision) {
+          precision = 'milliseconds';
+        }
+        if (typeof date === 'string') {
+          date = moment(date, moment.ISO_8601);
+        }
+        if (!moment.isMoment(value) || value.isSameOrAfter(date, precision)) {
+          return value;
+        }
+        return helpers.error('moment.isSameOrAfter', {date, precision});
       },
     },
   },
