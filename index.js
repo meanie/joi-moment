@@ -69,6 +69,11 @@ module.exports = Joi => ({
   },
   validate(value, helpers) {
 
+    //No value
+    if (!value) {
+      return value;
+    }
+
     //Invalid date provided
     if (!value.isValid()) {
       const errors = helpers.error('date.iso');
