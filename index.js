@@ -25,7 +25,9 @@ module.exports = Joi => ({
     }
 
     //Convert to moment
-    value = moment(value, moment.ISO_8601);
+    if (!moment.isMoment(value)) {
+      value = moment(value, moment.ISO_8601);
+    }
 
     //If invalid at this stage, return as is
     if (!value.isValid()) {
