@@ -119,7 +119,9 @@ module.exports = Joi => ({
         {
           name: 'date',
           ref: true,
-          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          assert: (value) => (
+            !value || typeof value === 'string' || moment.isMoment(value)
+          ),
           message: 'must be a date string or moment object',
         },
         {
@@ -130,6 +132,9 @@ module.exports = Joi => ({
       ],
       validate(value, helpers, args) {
         let {date, precision} = args;
+        if (!date) {
+          return value;
+        }
         if (!precision) {
           precision = 'milliseconds';
         }
@@ -153,7 +158,9 @@ module.exports = Joi => ({
         {
           name: 'date',
           ref: true,
-          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          assert: (value) => (
+            !value || typeof value === 'string' || moment.isMoment(value)
+          ),
           message: 'must be a date string or moment object',
         },
         {
@@ -162,8 +169,11 @@ module.exports = Joi => ({
           message: 'must be a string',
         },
       ],
-      validate(value, helpers, args, options) {
+      validate(value, helpers, args) {
         let {date, precision} = args;
+        if (!date) {
+          return value;
+        }
         if (!precision) {
           precision = 'milliseconds';
         }
@@ -187,7 +197,9 @@ module.exports = Joi => ({
         {
           name: 'date',
           ref: true,
-          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          assert: (value) => (
+            !value || typeof value === 'string' || moment.isMoment(value)
+          ),
           message: 'must be a date string or moment object',
         },
         {
@@ -198,6 +210,9 @@ module.exports = Joi => ({
       ],
       validate(value, helpers, args) {
         let {date, precision} = args;
+        if (!date) {
+          return value;
+        }
         if (!precision) {
           precision = 'milliseconds';
         }
@@ -221,7 +236,9 @@ module.exports = Joi => ({
         {
           name: 'date',
           ref: true,
-          assert: (value) => typeof value === 'string' || moment.isMoment(value),
+          assert: (value) => (
+            !value || typeof value === 'string' || moment.isMoment(value)
+          ),
           message: 'must be a date string or moment object',
         },
         {
@@ -230,8 +247,11 @@ module.exports = Joi => ({
           message: 'must be a string',
         },
       ],
-      validate(value, helpers, args, options) {
+      validate(value, helpers, args) {
         let {date, precision} = args;
+        if (!date) {
+          return value;
+        }
         if (!precision) {
           precision = 'milliseconds';
         }
