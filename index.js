@@ -41,9 +41,12 @@ module.exports = Joi => ({
     const max = helpers.schema.$_getFlag('max');
     const min = helpers.schema.$_getFlag('min');
 
-    //Apply a timezone
+    //Apply timezone
     if (tz) {
       value.tz(tz);
+    }
+    else if (helpers.prefs.context.timezone) {
+      value.tz(helpers.prefs.context.timezone);
     }
 
     //Start of period
