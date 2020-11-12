@@ -38,10 +38,18 @@ module.exports = Joi => ({
     const tz = helpers.schema.$_getFlag('tz');
     const startOf = helpers.schema.$_getFlag('startOf');
     const endOf = helpers.schema.$_getFlag('endOf');
-    const max = helpers.schema.$_getFlag('max');
-    const min = helpers.schema.$_getFlag('min');
+    let max = helpers.schema.$_getFlag('max');
+    let min = helpers.schema.$_getFlag('min');
 
-    //Apply timezone
+    //Resolve references
+    if (Joi.isRef(min)) {
+      min = helpers.prefs.context[min.key];
+    }
+    if (Joi.isRef(max)) {
+      max = helpers.prefs.context[max.key];
+    }
+
+    //Apply a timezone
     if (tz) {
       value.tz(tz);
     }
