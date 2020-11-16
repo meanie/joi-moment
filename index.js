@@ -17,7 +17,7 @@ module.exports = Joi => ({
     'moment.isSameOrBefore': `must be same as or before {{#date}}, with precision "{{#precision}}"`,
     'moment.isSameOrAfter': `must be same as or after {{#date}}, with precision "{{#precision}}"`,
   },
-  coerce(value, helpers) {
+  coerce(value, {schema, state, prefs}) {
 
     //No value
     if (!value) {
@@ -35,46 +35,42 @@ module.exports = Joi => ({
     }
 
     //Get flags
-    const tz = helpers.schema.$_getFlag('tz');
-    const startOf = helpers.schema.$_getFlag('startOf');
-    const endOf = helpers.schema.$_getFlag('endOf');
-    let max = helpers.schema.$_getFlag('max');
-    let min = helpers.schema.$_getFlag('min');
+    const tz = schema.$_getFlag('tz');
+    const startOf = schema.$_getFlag('startOf');
+    const endOf = schema.$_getFlag('endOf');
+    let maxDate = schema.$_getFlag('maxDate');
+    let minDate = schema.$_getFlag('minDate');
 
     //Resolve references
-    if (Joi.isRef(min)) {
-      min = helpers.prefs.context[min.key];
+    if (Joi.isRef(minDate)) {
+      minDate = minDate.resolve(value, state, prefs);
     }
-    if (Joi.isRef(max)) {
-      max = helpers.prefs.context[max.key];
+    if (Joi.isRef(maxDate)) {
+      maxDate = maxDate.resolve(value, state, prefs);
     }
 
     //Apply a timezone
     if (tz) {
       value.tz(tz);
     }
-    else if (helpers.prefs.context.timezone) {
-      value.tz(helpers.prefs.context.timezone);
+    else if (prefs.context.timezone) {
+      value.tz(prefs.context.timezone);
     }
 
-    //Start of period
+    //Start/end of period
     if (startOf) {
       value.startOf(startOf);
     }
-
-    //End of period
     if (endOf) {
       value.endOf(endOf);
     }
 
-    //Min date
-    if (min && value.isBefore(min)) {
-      value = min;
+    //Min/max date
+    if (minDate && value.isBefore(minDate)) {
+      value = minDate;
     }
-
-    //Max date
-    if (max && value.isAfter(max)) {
-      value = max;
+    if (maxDate && value.isAfter(maxDate)) {
+      value = maxDate;
     }
 
     //Return value
@@ -110,14 +106,24 @@ module.exports = Joi => ({
       },
     },
     maxDate: {
-      method(max) {
-        return this.$_setFlag('max', max);
+      method(maxDate) {
+        return this.$_setFlag('maxDate', maxDate);
       },
     },
     minDate: {
-      method(min) {
-        return this.$_setFlag('min', min);
+      method(minDate) {
+        return this.$_setFlag('minDate', minDate);
       },
+      // args: [
+      //   {
+      //     name: 'minDate',
+      //     ref: true,
+      //     assert: (value) => (
+      //       !value || moment.isMoment(value)
+      //     ),
+      //     message: 'must be a moment object',
+      //   },
+      // ],
     },
     isBefore: {
       method(date, precision) {
