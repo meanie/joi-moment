@@ -1,7 +1,7 @@
 {
   "name": "@meanie/joi-moment",
   "description": "A Joi extension to automatically convert ISO date strings to moment objects and validate using moment functions",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "homepage": "https://github.com/meanie/joi-moment#readme",
   "author": {
     "name": "Adam Reis",

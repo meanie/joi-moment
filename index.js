@@ -12,10 +12,10 @@ module.exports = Joi => ({
   type: 'moment',
   base: Joi.any(),
   messages: {
-    'moment.isBefore': `must be before {{#date}}, with precision "{{#precision}}"`,
-    'moment.isAfter': `must be after {{#date}}, with precision "{{#precision}}"`,
-    'moment.isSameOrBefore': `must be same as or before {{#date}}, with precision "{{#precision}}"`,
-    'moment.isSameOrAfter': `must be same as or after {{#date}}, with precision "{{#precision}}"`,
+    'moment.isBefore': `must be before {{#date}}"`,
+    'moment.isAfter': `must be after {{#date}}"`,
+    'moment.isSameOrBefore': `must be same as or before {{#date}}"`,
+    'moment.isSameOrAfter': `must be same as or after {{#date}}"`,
   },
   coerce(value, {schema, state, prefs}) {
 
@@ -206,7 +206,7 @@ module.exports = Joi => ({
     isSameOrBefore: {
       method(date, precision) {
         return this.$_addRule({
-          name: 'isBefore',
+          name: 'isSameOrBefore',
           args: {date, precision},
         });
       },
@@ -245,7 +245,7 @@ module.exports = Joi => ({
     isSameOrAfter: {
       method(date, precision) {
         return this.$_addRule({
-          name: 'isAfter',
+          name: 'isSameOrAfter',
           args: {date, precision},
         });
       },
